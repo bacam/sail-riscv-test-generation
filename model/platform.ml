@@ -1,65 +1,28 @@
-(**************************************************************************)
-(*     Sail                                                               *)
-(*                                                                        *)
-(*  Copyright (c) 2013-2017                                               *)
-(*    Kathyrn Gray                                                        *)
-(*    Shaked Flur                                                         *)
-(*    Stephen Kell                                                        *)
-(*    Gabriel Kerneis                                                     *)
-(*    Robert Norton-Wright                                                *)
-(*    Christopher Pulte                                                   *)
-(*    Peter Sewell                                                        *)
-(*    Alasdair Armstrong                                                  *)
-(*    Brian Campbell                                                      *)
-(*    Thomas Bauereiss                                                    *)
-(*    Anthony Fox                                                         *)
-(*    Jon French                                                          *)
-(*    Dominic Mulligan                                                    *)
-(*    Stephen Kell                                                        *)
-(*    Mark Wassell                                                        *)
-(*                                                                        *)
-(*  All rights reserved.                                                  *)
-(*                                                                        *)
-(*  This software was developed by the University of Cambridge Computer   *)
-(*  Laboratory as part of the Rigorous Engineering of Mainstream Systems  *)
-(*  (REMS) project, funded by EPSRC grant EP/K008528/1.                   *)
-(*                                                                        *)
-(*  Redistribution and use in source and binary forms, with or without    *)
-(*  modification, are permitted provided that the following conditions    *)
-(*  are met:                                                              *)
-(*  1. Redistributions of source code must retain the above copyright     *)
-(*     notice, this list of conditions and the following disclaimer.      *)
-(*  2. Redistributions in binary form must reproduce the above copyright  *)
-(*     notice, this list of conditions and the following disclaimer in    *)
-(*     the documentation and/or other materials provided with the         *)
-(*     distribution.                                                      *)
-(*                                                                        *)
-(*  THIS SOFTWARE IS PROVIDED BY THE AUTHOR AND CONTRIBUTORS ``AS IS''    *)
-(*  AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED     *)
-(*  TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A       *)
-(*  PARTICULAR PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE AUTHOR OR   *)
-(*  CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,          *)
-(*  SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT      *)
-(*  LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF      *)
-(*  USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND   *)
-(*  ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,    *)
-(*  OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT    *)
-(*  OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF    *)
-(*  SUCH DAMAGE.                                                          *)
-(**************************************************************************)
-
 open Sail_lib;;
 module P = Platform_impl;;
 module Elf = Elf_loader;;
 
 (* Platform configuration *)
 
-let config_enable_dirty_update = ref false
-let config_enable_misaligned_access = ref false
+let config_enable_rvc                  = ref true
+let config_enable_next                 = ref false
+let config_enable_writable_misa        = ref true
+let config_enable_dirty_update         = ref false
+let config_enable_misaligned_access    = ref false
 let config_mtval_has_illegal_inst_bits = ref false
+let config_enable_writable_fiom        = ref true
+let config_enable_vext                 = ref true
+let config_pmp_count                   = ref Big_int.zero
+let config_pmp_grain                   = ref Big_int.zero
+
+let set_config_pmp_count x = config_pmp_count := Big_int.of_int x
+let set_config_pmp_grain x = config_pmp_grain := Big_int.of_int x
+
+let platform_arch = ref P.RV64
 
 (* logging *)
 
+let config_print_exception   = ref true
 let config_print_instr       = ref true
 let config_print_reg         = ref true
 let config_print_mem_access  = ref true
@@ -85,18 +48,29 @@ let print_platform s =
   then print_endline s
   else ()
 
+let get_config_print_exception () = !config_print_exception
+let get_config_print_instr () = !config_print_instr
+let get_config_print_reg () = !config_print_reg
+let get_config_print_mem () = !config_print_mem_access
+let get_config_print_platform () = !config_print_platform
+
 (* Mapping to Sail externs *)
+let cur_arch_bitwidth () =
+  match !platform_arch with
+    | P.RV64 -> Big_int.of_int 64
+    | P.RV32 -> Big_int.of_int 32
 
-let bits_of_int i =
-  get_slice_int (Big_int.of_int 64, Big_int.of_int i, Big_int.zero)
+let arch_bits_of_int i =
+  get_slice_int (cur_arch_bitwidth (), Big_int.of_int i, Big_int.zero)
 
-let bits_of_int64 i =
-  get_slice_int (Big_int.of_int 64, Big_int.of_int64 i, Big_int.zero)
+let arch_bits_of_int64 i =
+  get_slice_int (cur_arch_bitwidth (), Big_int.of_int64 i, Big_int.zero)
 
 let rom_size_ref = ref 0
-let make_rom start_pc =
-  let reset_vec = List.concat (List.map P.uint32_to_bytes (P.reset_vec_int start_pc)) in
-  let dtb = P.make_dtb (P.make_dts ()) in
+let make_rom arch start_pc =
+  let reset_vec =
+    List.concat (List.map P.uint32_to_bytes (P.reset_vec_int arch start_pc)) in
+  let dtb = P.make_dtb (P.make_dts arch) in
   let rom = reset_vec @ dtb in
   ( rom_size_ref := List.length rom;
     (*
@@ -108,23 +82,41 @@ let make_rom start_pc =
      *)
     rom )
 
-let enable_dirty_update () = !config_enable_dirty_update
-let enable_misaligned_access () = !config_enable_misaligned_access
-let mtval_has_illegal_inst_bits () = !config_mtval_has_illegal_inst_bits
+let enable_writable_misa ()          = !config_enable_writable_misa
+let enable_rvc ()                    = !config_enable_rvc
+let enable_next ()                   = !config_enable_next
+let enable_fdext ()                  = false
+let enable_vext ()                   = !config_enable_vext
+let enable_dirty_update ()           = !config_enable_dirty_update
+let enable_misaligned_access ()      = !config_enable_misaligned_access
+let mtval_has_illegal_inst_bits ()   = !config_mtval_has_illegal_inst_bits
+let enable_zfinx ()                  = false
+let enable_writable_fiom ()          = !config_enable_writable_fiom
+let pmp_count ()                     = !config_pmp_count
+let pmp_grain ()                     = !config_pmp_grain
 
-let rom_base () = bits_of_int64 P.rom_base
-let rom_size () = bits_of_int   !rom_size_ref
+let rom_base ()   = arch_bits_of_int64 P.rom_base
+let rom_size ()   = arch_bits_of_int   !rom_size_ref
 
-let dram_base () = bits_of_int64 P.dram_base
-let dram_size () = bits_of_int64 !P.dram_size_ref
+let dram_base ()  = arch_bits_of_int64 P.dram_base
+let dram_size ()  = arch_bits_of_int64 !P.dram_size_ref
 
-let htif_tohost () =
-  bits_of_int64 (Big_int.to_int64 (Elf.elf_tohost ()))
+let clint_base () = arch_bits_of_int64 P.clint_base
+let clint_size () = arch_bits_of_int64 P.clint_size
 
-let clint_base () = bits_of_int64 P.clint_base
-let clint_size () = bits_of_int64 P.clint_size
+let uart_base () = arch_bits_of_int64 P.uart_base
+let uart_size () = arch_bits_of_int64 P.uart_size
 
 let insns_per_tick () = Big_int.of_int P.insns_per_tick
+
+let htif_tohost () =
+  arch_bits_of_int64 (Big_int.to_int64 (Elf.elf_tohost ()))
+
+(* Entropy Source - get random bits *)
+
+(* This function can be changed to support deterministic sequences of
+   pseudo-random bytes. This is useful for testing. *)
+let get_16_random_bits () = arch_bits_of_int (Random.int 0xFFFF)
 
 (* load reservation *)
 
@@ -144,6 +136,18 @@ let cancel_reservation () =
   print_platform (Printf.sprintf "reservation <- none\n");
   reservation := "none"
 
+let read_mem (rk, addrsize, addr, len) =
+  Sail_lib.fast_read_ram (len, addr)
+
+let write_mem_ea _ = ()
+
+let write_mem (wk, addrsize, addr, len, value) =
+  Sail_lib.write_ram' (len, Sail_lib.uint addr, value); true
+
+let excl_res _ = true
+
+let barrier _ = ()
+
 (* terminal I/O *)
 
 let term_write char_bits =
@@ -152,17 +156,23 @@ let term_write char_bits =
 
 let term_read () =
   let c = P.term_read () in
-  bits_of_int (int_of_char c)
+  arch_bits_of_int (int_of_char c)
+
+(* physical memory *)
+
+let get_mem_bytes addr len =
+  read_mem_bytes addr len
 
 (* returns starting value for PC, i.e. start of reset vector *)
-let init elf_file =
+let init arch elf_file =
+  platform_arch := arch;
   Elf.load_elf elf_file;
 
   print_platform (Printf.sprintf "\nRegistered htif_tohost at 0x%Lx.\n" (Big_int.to_int64 (Elf.elf_tohost ())));
   print_platform (Printf.sprintf "Registered clint at 0x%Lx (size 0x%Lx).\n%!" P.clint_base P.clint_size);
 
   let start_pc = Elf.Big_int.to_int64 (Elf.elf_entry ()) in
-  let rom = make_rom start_pc in
+  let rom = make_rom arch start_pc in
   let rom_base = Big_int.of_int64 P.rom_base in
   let rec write_rom ofs = function
     | [] -> ()
@@ -170,5 +180,5 @@ let init elf_file =
                  (wram addr h);
                  write_rom (ofs + 1) tl
   in ( write_rom 0 rom;
-       get_slice_int (Big_int.of_int 64, rom_base, Big_int.zero)
+       get_slice_int (cur_arch_bitwidth (), rom_base, Big_int.zero)
      )

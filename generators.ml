@@ -30,6 +30,7 @@ let startswith s s' =
 let unsupported = [
     (* Arbitrary nonsense *)
     String.equal "ILLEGAL"; String.equal "C_ILLEGAL";
+    String.equal "NOT_CAPMODE"; String.equal "NOT_C_CAPMODE";
     (* AMO *)
     startswith "AMO"; String.equal "LOADRES"; String.equal "STORECON";
     (* RMEM sentinels *)
@@ -57,7 +58,7 @@ let restrict_registers g =
      1, 1;
      1, 2]
   in
-  let regs = List.map (fun (fq,i) -> (fq, bits_of_int 16 i)) reg_list in
+  let regs = List.map (fun (fq,i) -> (fq, bits_of_int 5 i)) reg_list in
   let cregs = List.map (fun (fq,i) -> (fq, bits_of_int 4 i)) creg_list in
-  { g with gen_zregbits = (fun _ -> frequency regs);
-           gen_zcregbits = (fun _ -> frequency cregs) }
+  { g with gen_zregidx = (fun _ -> frequency regs);
+           gen_zcregidx = (fun _ -> frequency cregs) }
