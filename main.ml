@@ -58,8 +58,13 @@ let rec generate_one () =
     try
       let instr = gens.gen_zast gens in
       let bits =
+        try zencdec_capmode_forwards instr
+        with Match_failure _ ->
+        try zencdec_compressed_capmode_forwards instr
+        with Match_failure _ ->
         try zencdec_forwards instr
-        with Match_failure _ -> zencdec_compressed_forwards instr
+        with Match_failure _ ->
+          zencdec_compressed_forwards instr
       in
       match custom2, bits with
       | false, [_;_;_;_;_;_;_;_;_;_;_;_;_;_;_;_;_;_;_;_;_;_;_;_;_;B1;B0;B1;B1;B0;B1;B1] ->
