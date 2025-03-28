@@ -17015,7 +17015,7 @@ and zencdec_compressed_forwards (zargz3 : (zast)) : (bit) list = sail_call (fun 
     | ZC_SRLI ((zv__889, zrsd)) when (let znzzui5 = (subrange (zv__889, (Big_int.of_int (5)), (Big_int.of_int (5)))) in
     let znzzui5 = (subrange (zv__889, (Big_int.of_int (5)), (Big_int.of_int (5)))) in
     let znzzui40 = (subrange (zv__889, (Big_int.of_int (4)), Big_int.zero)) in
-    zneq_bits ((append (znzzui5, znzzui40)), [B0; B0; B0; B0; B0; B0])) ->
+    (zneq_bits ((append (znzzui5, znzzui40)), [B0; B0; B0; B0; B0; B0])) && ((eq_int ((Big_int.of_int (32)), (Big_int.of_int (64)))) || (eq_list (znzzui5, [B0])))) ->
       let znzzui5 = (subrange (zv__889, (Big_int.of_int (5)), (Big_int.of_int (5)))) in
       let znzzui5 = (subrange (zv__889, (Big_int.of_int (5)), (Big_int.of_int (5)))) in
       let znzzui40 = (subrange (zv__889, (Big_int.of_int (4)), Big_int.zero)) in
@@ -17023,7 +17023,7 @@ and zencdec_compressed_forwards (zargz3 : (zast)) : (bit) list = sail_call (fun 
     | ZC_SRAI ((zv__890, zrsd)) when (let znzzui5 = (subrange (zv__890, (Big_int.of_int (5)), (Big_int.of_int (5)))) in
     let znzzui5 = (subrange (zv__890, (Big_int.of_int (5)), (Big_int.of_int (5)))) in
     let znzzui40 = (subrange (zv__890, (Big_int.of_int (4)), Big_int.zero)) in
-    zneq_bits ((append (znzzui5, znzzui40)), [B0; B0; B0; B0; B0; B0])) ->
+    (zneq_bits ((append (znzzui5, znzzui40)), [B0; B0; B0; B0; B0; B0])) && ((eq_int ((Big_int.of_int (32)), (Big_int.of_int (64)))) || (eq_list (znzzui5, [B0])))) ->
       let znzzui5 = (subrange (zv__890, (Big_int.of_int (5)), (Big_int.of_int (5)))) in
       let znzzui5 = (subrange (zv__890, (Big_int.of_int (5)), (Big_int.of_int (5)))) in
       let znzzui40 = (subrange (zv__890, (Big_int.of_int (4)), Big_int.zero)) in
@@ -17248,14 +17248,14 @@ and zencdec_compressed_backwards (zargz3 : ((bit) list)) : zast = sail_call (fun
       ZC_LUI ((fun (v0, v1) -> (v1, v0)) (zrd, append ((zimm17), (zimm1612))))
     | zv__944 when ((let znzzui5 = (subrange (zv__944, (Big_int.of_int (12)), (Big_int.of_int (12)))) in
     let znzzui40 = (subrange (zv__944, (Big_int.of_int (6)), (Big_int.of_int (2)))) in
-    zneq_bits ((append (znzzui5, znzzui40)), [B0; B0; B0; B0; B0; B0])) && ((eq_list ((subrange (zv__944, (Big_int.of_int (15)), (Big_int.of_int (13)))), [B1; B0; B0])) && ((eq_list ((subrange (zv__944, (Big_int.of_int (11)), (Big_int.of_int (10)))), [B0; B0])) && (eq_list ((subrange (zv__944, (Big_int.of_int (1)), Big_int.zero)), [B0; B1]))))) ->
+    (zneq_bits ((append (znzzui5, znzzui40)), [B0; B0; B0; B0; B0; B0])) && ((eq_int ((Big_int.of_int (32)), (Big_int.of_int (64)))) || (eq_list (znzzui5, [B0])))) && ((eq_list ((subrange (zv__944, (Big_int.of_int (15)), (Big_int.of_int (13)))), [B1; B0; B0])) && ((eq_list ((subrange (zv__944, (Big_int.of_int (11)), (Big_int.of_int (10)))), [B0; B0])) && (eq_list ((subrange (zv__944, (Big_int.of_int (1)), Big_int.zero)), [B0; B1]))))) ->
       let zrsd = (subrange (zv__944, (Big_int.of_int (9)), (Big_int.of_int (7)))) in
       let znzzui5 = (subrange (zv__944, (Big_int.of_int (12)), (Big_int.of_int (12)))) in
       let znzzui40 = (subrange (zv__944, (Big_int.of_int (6)), (Big_int.of_int (2)))) in
       ZC_SRLI ((fun (v0, v1) -> (v1, v0)) (zrsd, append ((znzzui5), (znzzui40))))
     | zv__948 when ((let znzzui5 = (subrange (zv__948, (Big_int.of_int (12)), (Big_int.of_int (12)))) in
     let znzzui40 = (subrange (zv__948, (Big_int.of_int (6)), (Big_int.of_int (2)))) in
-    zneq_bits ((append (znzzui5, znzzui40)), [B0; B0; B0; B0; B0; B0])) && ((eq_list ((subrange (zv__948, (Big_int.of_int (15)), (Big_int.of_int (13)))), [B1; B0; B0])) && ((eq_list ((subrange (zv__948, (Big_int.of_int (11)), (Big_int.of_int (10)))), [B0; B1])) && (eq_list ((subrange (zv__948, (Big_int.of_int (1)), Big_int.zero)), [B0; B1]))))) ->
+    (zneq_bits ((append (znzzui5, znzzui40)), [B0; B0; B0; B0; B0; B0])) && ((eq_int ((Big_int.of_int (32)), (Big_int.of_int (64)))) || (eq_list (znzzui5, [B0])))) && ((eq_list ((subrange (zv__948, (Big_int.of_int (15)), (Big_int.of_int (13)))), [B1; B0; B0])) && ((eq_list ((subrange (zv__948, (Big_int.of_int (11)), (Big_int.of_int (10)))), [B0; B1])) && (eq_list ((subrange (zv__948, (Big_int.of_int (1)), Big_int.zero)), [B0; B1]))))) ->
       let zrsd = (subrange (zv__948, (Big_int.of_int (9)), (Big_int.of_int (7)))) in
       let znzzui5 = (subrange (zv__948, (Big_int.of_int (12)), (Big_int.of_int (12)))) in
       let znzzui40 = (subrange (zv__948, (Big_int.of_int (6)), (Big_int.of_int (2)))) in
@@ -17457,12 +17457,12 @@ and zencdec_compressed_forwards_matches (zargz3 : (zast)) : bool = sail_call (fu
     | ZC_SRLI ((zv__1093, zrsd)) when (let znzzui5 = (subrange (zv__1093, (Big_int.of_int (5)), (Big_int.of_int (5)))) in
     let znzzui5 = (subrange (zv__1093, (Big_int.of_int (5)), (Big_int.of_int (5)))) in
     let znzzui40 = (subrange (zv__1093, (Big_int.of_int (4)), Big_int.zero)) in
-    zneq_bits ((append (znzzui5, znzzui40)), [B0; B0; B0; B0; B0; B0])) ->
+    (zneq_bits ((append (znzzui5, znzzui40)), [B0; B0; B0; B0; B0; B0])) && ((eq_int ((Big_int.of_int (32)), (Big_int.of_int (64)))) || (eq_list (znzzui5, [B0])))) ->
       true
     | ZC_SRAI ((zv__1094, zrsd)) when (let znzzui5 = (subrange (zv__1094, (Big_int.of_int (5)), (Big_int.of_int (5)))) in
     let znzzui5 = (subrange (zv__1094, (Big_int.of_int (5)), (Big_int.of_int (5)))) in
     let znzzui40 = (subrange (zv__1094, (Big_int.of_int (4)), Big_int.zero)) in
-    zneq_bits ((append (znzzui5, znzzui40)), [B0; B0; B0; B0; B0; B0])) ->
+    (zneq_bits ((append (znzzui5, znzzui40)), [B0; B0; B0; B0; B0; B0])) && ((eq_int ((Big_int.of_int (32)), (Big_int.of_int (64)))) || (eq_list (znzzui5, [B0])))) ->
       true
     | ZC_ANDI ((zv__1095, zrsd)) -> true
     | ZC_SUB ((zrsd, zrs2)) -> true
@@ -17565,11 +17565,11 @@ and zencdec_compressed_backwards_matches (zargz3 : ((bit) list)) : bool = sail_c
       true
     | zv__1148 when ((let znzzui5 = (subrange (zv__1148, (Big_int.of_int (12)), (Big_int.of_int (12)))) in
     let znzzui40 = (subrange (zv__1148, (Big_int.of_int (6)), (Big_int.of_int (2)))) in
-    zneq_bits ((append (znzzui5, znzzui40)), [B0; B0; B0; B0; B0; B0])) && ((eq_list ((subrange (zv__1148, (Big_int.of_int (15)), (Big_int.of_int (13)))), [B1; B0; B0])) && ((eq_list ((subrange (zv__1148, (Big_int.of_int (11)), (Big_int.of_int (10)))), [B0; B0])) && (eq_list ((subrange (zv__1148, (Big_int.of_int (1)), Big_int.zero)), [B0; B1]))))) ->
+    (zneq_bits ((append (znzzui5, znzzui40)), [B0; B0; B0; B0; B0; B0])) && ((eq_int ((Big_int.of_int (32)), (Big_int.of_int (64)))) || (eq_list (znzzui5, [B0])))) && ((eq_list ((subrange (zv__1148, (Big_int.of_int (15)), (Big_int.of_int (13)))), [B1; B0; B0])) && ((eq_list ((subrange (zv__1148, (Big_int.of_int (11)), (Big_int.of_int (10)))), [B0; B0])) && (eq_list ((subrange (zv__1148, (Big_int.of_int (1)), Big_int.zero)), [B0; B1]))))) ->
       true
     | zv__1152 when ((let znzzui5 = (subrange (zv__1152, (Big_int.of_int (12)), (Big_int.of_int (12)))) in
     let znzzui40 = (subrange (zv__1152, (Big_int.of_int (6)), (Big_int.of_int (2)))) in
-    zneq_bits ((append (znzzui5, znzzui40)), [B0; B0; B0; B0; B0; B0])) && ((eq_list ((subrange (zv__1152, (Big_int.of_int (15)), (Big_int.of_int (13)))), [B1; B0; B0])) && ((eq_list ((subrange (zv__1152, (Big_int.of_int (11)), (Big_int.of_int (10)))), [B0; B1])) && (eq_list ((subrange (zv__1152, (Big_int.of_int (1)), Big_int.zero)), [B0; B1]))))) ->
+    (zneq_bits ((append (znzzui5, znzzui40)), [B0; B0; B0; B0; B0; B0])) && ((eq_int ((Big_int.of_int (32)), (Big_int.of_int (64)))) || (eq_list (znzzui5, [B0])))) && ((eq_list ((subrange (zv__1152, (Big_int.of_int (15)), (Big_int.of_int (13)))), [B1; B0; B0])) && ((eq_list ((subrange (zv__1152, (Big_int.of_int (11)), (Big_int.of_int (10)))), [B0; B1])) && (eq_list ((subrange (zv__1152, (Big_int.of_int (1)), Big_int.zero)), [B0; B1]))))) ->
       true
     | zv__1156 when ((eq_list ((subrange (zv__1156, (Big_int.of_int (15)), (Big_int.of_int (13)))), [B1; B0; B0])) && ((eq_list ((subrange (zv__1156, (Big_int.of_int (11)), (Big_int.of_int (10)))), [B1; B0])) && (eq_list ((subrange (zv__1156, (Big_int.of_int (1)), Big_int.zero)), [B0; B1])))) ->
       true
