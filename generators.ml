@@ -51,14 +51,17 @@ let restrict_registers g =
   let reg_list =
     [1, 0;
      2, 1;
+     2, 3;
      2, 8;
      2, 9] in
   let creg_list =
     [1, 0;
      1, 1;
-     1, 2]
+     1, 2;
+     1, 4;]
   in
-  let regs = List.map (fun (fq,i) -> (fq, bits_of_int 5 i)) reg_list in
+  (* Note that the first arg to bits_of_int is the largest power of 2 representable in the bitvector *)
+  let regs = List.map (fun (fq,i) -> (fq, bits_of_int 16 i)) reg_list in
   let cregs = List.map (fun (fq,i) -> (fq, bits_of_int 4 i)) creg_list in
   { g with gen_zregidx = (fun _ -> frequency regs);
            gen_zcregidx = (fun _ -> frequency cregs) }

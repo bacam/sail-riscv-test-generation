@@ -36,8 +36,8 @@ let gens, socket, num, custom2 =
     (fun _ -> raise (Bad "Unexpected argument"))
     "RISC-V instruction generator"
   in (if !remove_compressed
-     then Generators.remove_compressed rand_gens
-     else Generators.remove_unsupported rand_gens),
+     then Generators.remove_compressed !gens
+     else Generators.remove_unsupported !gens),
      (match !port with
       | Some port ->
         let open Unix in
