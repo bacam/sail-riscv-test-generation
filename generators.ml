@@ -31,6 +31,8 @@ let unsupported = [
     (* Arbitrary nonsense *)
     String.equal "ILLEGAL"; String.equal "C_ILLEGAL";
     String.equal "NOT_CAPMODE"; String.equal "NOT_C_CAPMODE";
+    (* Would need to provide some interrupts *)
+    String.equal "WFI";
     (* AMO *)
     startswith "AMO"; String.equal "LOADRES"; String.equal "STORECON";
     (* RMEM sentinels *)
