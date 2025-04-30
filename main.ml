@@ -2,6 +2,9 @@ open Riscv
 open Sail_lib
 open Generators
 
+(* Ensure CHERI encoding works *)
+let () = z_set_Misa_X (zmisa, [B1]);;
+
 let set_bytes bytes off v =
   let rec build acc v =
     match v with
