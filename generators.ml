@@ -38,7 +38,13 @@ let unsupported = [
     (* RMEM sentinels *)
     String.equal "STOP_FETCHING"; String.equal "THREAD_START";
     (* CSR are expected to be different *)
-    String.equal "CSR"
+    String.equal "CSR";
+    (* Not in cheriot (just because no supervisor mode?) *)
+    String.equal "SFENCE_VMA";
+    (* Already know hints have problems, fences appear uninteresting *)
+    String.ends_with ~suffix:"_HINT";
+    String.equal "FENCE_RESERVED";
+    String.equal "FENCEI_RESERVED";
   ]
 
 let remove_unsupported g =
