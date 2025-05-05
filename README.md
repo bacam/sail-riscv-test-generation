@@ -17,4 +17,5 @@ libraries to be installed.  The easiest way to do this is to install
 
 See the `LICENCE` file for details; note that the references to PPrint
 and ASL code refer to code in the Sail repository that is not present
-here.
+here.  Recent work on the CHERIoT architecture was performed for
+lowRISC CIC in 2025.
